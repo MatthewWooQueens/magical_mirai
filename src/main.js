@@ -1,6 +1,10 @@
 import { Application,Container,Text, Graphics, Point, Circle, Assets,Sprite, AnimatedSprite, v8_3_4 } from "pixi.js";
 import { Ease, Player } from "textalive-app-api";
 import dotenv from 'dotenv';
+import water1Url from './assets/water1.webp'
+import water2Url from './assets/water2.webp'
+import water3Url from './assets/water3.webp'
+import grassUrl  from './assets/grass.webp'
 
 const token = import.meta.env.TOKEN
 
@@ -199,6 +203,15 @@ const mainPlayer = new TextAlivePlayer();
   document.body.appendChild(app.canvas);
   const container = new Container({});
 
+
+const textureGrass = await Assets.load('./assets/grass.webp')
+const textureWater = await Promise.all([
+    Assets.load('./assets/water1.webp'),
+    Assets.load('./assets/water2.webp'),
+    Assets.load('./assets/water3.webp')
+  ])
+
+
   app.renderer.on('resize', (width, height) => {
     const scale = Math.min(width / GAME_WIDTH, height / GAME_HEIGHT)
     container.scale.set(scale)
@@ -209,18 +222,12 @@ const mainPlayer = new TextAlivePlayer();
   app.stage.addChild(container);
   app.resize()
 
-  const textureGrass = await Assets.load('./assets/grass.webp')
   const grassSprite = new Sprite(textureGrass)
   grassSprite.height = GAME_HEIGHT*0.2
   grassSprite.width = GAME_WIDTH
   grassSprite.y = GAME_HEIGHT*0.8
   container.addChild(grassSprite)
 
-  const textureWater = await Promise.all([
-    Assets.load('./assets/water1.webp'),
-    Assets.load('./assets/water2.webp'),
-    Assets.load('./assets/water3.webp')
-  ])
   const waterSprite = new AnimatedSprite(textureWater)
   waterSprite.width = GAME_WIDTH
   waterSprite.height = GAME_HEIGHT*0.65
@@ -413,7 +420,9 @@ const mainPlayer = new TextAlivePlayer();
         }
       }
     }
-    prevBeat = s.index
+    if(s){
+      prevBeat = s.index
+    }
     waterRipple.update(delta)
   })
 })()
